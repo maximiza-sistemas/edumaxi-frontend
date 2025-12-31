@@ -1,5 +1,5 @@
 [phases.build]
-cmds = ["npm install", "npm run build"]
+cmds = ["npm install", "chmod -R +x node_modules/.bin", "npm run build"]
 
 [phases.setup]
 nixPkgs = ["nodejs_20", "nginx"]
