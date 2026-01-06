@@ -190,8 +190,11 @@ export default function ManageBooks() {
         try {
             // Load PDF.js
             const pdfjsLib = await import('pdfjs-dist');
-            // Worker is needed for performance and avoiding main thread blocking
-            pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+
+            // Set worker using unpkg which is often more reliable for specific versions, 
+            // or simply use the version from the imported library to construct the URL correctly
+            // Using unpkg with specific version to ensure match
+            pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
 
             const arrayBuffer = await file.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
