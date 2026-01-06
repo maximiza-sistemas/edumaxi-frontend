@@ -211,10 +211,11 @@ export default function ManageBooks() {
             canvas.width = viewport.width;
 
             // Render page to canvas
-            await page.render({
+            const renderContext = {
                 canvasContext: context,
                 viewport: viewport
-            }).promise;
+            };
+            await page.render(renderContext as any).promise;
 
             // Convert to blob
             const blob = await new Promise<Blob | null>(resolve =>
@@ -265,69 +266,66 @@ export default function ManageBooks() {
 
             <BookFilters onFilterChange={setFilters} />
 
-            <div className="books-table-container">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Livro</th>
-                            <th>Tipo</th>
-                            <th>Componente</th>
-                            <th>Turmas</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredBooks.map(book => (
-                            <tr key={book.id}>
-                                <td>
-                                    <div className="book-cell">
-                                        <img src={book.cover_url} alt={book.title} className="book-thumb" />
-                                        <div className="book-details">
-                                            <span className="book-name">{book.title}</span>
-                                            <span className="book-author">{book.author}</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span className={`badge badge-${book.book_type}`}>
-                                        {book.book_type === 'professor' ? 'Professor' : 'Aluno'}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span className="badge badge-component">{book.curriculum_component}</span>
-                                </td>
-                                <td>
-                                    <div className="class-tags">
-                                        {(book.class_groups || []).slice(0, 2).map((group: string) => (
-                                            <span key={group} className="class-tag">{group}</span>
-                                        ))}
-                                        {(book.class_groups || []).length > 2 && (
-                                            <span className="class-tag-more">+{(book.class_groups || []).length - 2}</span>
-                                        )}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div className="actions">
-                                        <button className="btn btn-icon" onClick={() => openModal(book)} title="Editar">
-                                            <Edit2 size={18} />
-                                        </button>
-                                        <button className="btn btn-icon danger" onClick={() => handleDelete(book.id)} title="Excluir">
-                                            <Trash2 size={18} />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                        {filteredBooks.length === 0 && (
-                            <tr>
-                                <td colSpan={5} className="text-center text-muted" style={{ padding: '2rem' }}>
-                                    Nenhum livro encontrado com os filtros selecionados.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+            <div className="books-grid">
+                {filteredBooks.map(book => (
+                    <div key={book.id} className="book-card animate-slideUp">
+                        <div className="book-card-cover-container">
+                            {/* Blurred background for diverse aspect ratios */}
+                            <div
+                                className="book-card-cover-blur"
+                                style={{ backgroundImage: `url(${book.cover_url})` }}
+                            />
+                            <img
+                                src={book.cover_url}
+                                alt={book.title}
+                                className="book-card-cover"
+                                style={{ position: 'relative', zIndex: 1 }}
+                            />
+                        </div>
+
+                        <div className="book-card-content">
+                            <div className="book-card-badges">
+                                <span className={`badge badge-${book.book_type}`}>
+                                    {book.book_type === 'professor' ? 'Professor' : 'Aluno'}
+                                </span>
+                                <span className="badge badge-component">{book.curriculum_component}</span>
+                            </div>
+
+                            <div>
+                                <h3 className="book-name" title={book.title}>{book.title}</h3>
+                                <span className="book-author">{book.author}</span>
+                            </div>
+
+                            <div className="class-tags">
+                                {(book.class_groups || []).slice(0, 3).map((group: string) => (
+                                    <span key={group} className="class-tag">{group}</span>
+                                ))}
+                                {(book.class_groups || []).length > 3 && (
+                                    <span className="class-tag-more">+{(book.class_groups || []).length - 3}</span>
+                                )}
+                            </div>
+
+                            <div className="book-card-footer">
+                                <div className="book-card-actions">
+                                    <button className="btn btn-icon" onClick={() => openModal(book)} title="Editar">
+                                        <Edit2 size={18} />
+                                    </button>
+                                    <button className="btn btn-icon danger" onClick={() => handleDelete(book.id)} title="Excluir">
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
+
+            {filteredBooks.length === 0 && (
+                <div className="text-center text-muted" style={{ padding: '4rem' }}>
+                    <FileText size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
+                    <p>Nenhum livro encontrado com os filtros selecionados.</p>
+                </div>
+            )}
 
             {/* Add/Edit Book Modal */}
             {isModalOpen && (
