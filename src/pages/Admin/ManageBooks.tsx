@@ -482,22 +482,13 @@ export default function ManageBooks() {
                                                         </button>
                                                     </div>
                                                 ) : (
-                                                    <div className="flex gap-2">
-                                                        <input
-                                                            type="url"
-                                                            className="input flex-1"
-                                                            value={formData.coverUrl}
-                                                            onChange={e => setFormData({ ...formData, coverUrl: e.target.value })}
-                                                            placeholder="https://exemplo.com/capa.jpg ou faça upload"
-                                                        />
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-secondary"
-                                                            onClick={() => coverInputRef.current?.click()}
-                                                            title="Fazer upload de imagem"
-                                                        >
-                                                            <Upload size={20} />
-                                                        </button>
+                                                    <div
+                                                        className="upload-area"
+                                                        onClick={() => coverInputRef.current?.click()}
+                                                    >
+                                                        <Upload size={32} />
+                                                        <span>Clique para selecionar uma capa</span>
+                                                        <span className="upload-hint">Formatos: JPG, PNG (Max 5MB)</span>
                                                     </div>
                                                 )}
 
