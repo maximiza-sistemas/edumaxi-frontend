@@ -50,6 +50,13 @@ export default function ManageBooks() {
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // Cover upload state
+    const [coverFile, setCoverFile] = useState<File | null>(null);
+    const [isUploadingCover, setIsUploadingCover] = useState(false);
+    const [uploadCoverError, setUploadCoverError] = useState<string | null>(null);
+    const [uploadCoverSuccess, setUploadCoverSuccess] = useState(false);
+    const coverInputRef = useRef<HTMLInputElement>(null);
+
     const filteredBooks = filterBooks(filters);
 
     const openModal = (book?: Book) => {
@@ -67,6 +74,8 @@ export default function ManageBooks() {
             });
             setPdfFile(null);
             setUploadSuccess(!!book.pdf_url);
+            setCoverFile(null);
+            setUploadCoverSuccess(!!book.cover_url);
         } else {
             setEditingBook(null);
             setFormData({
@@ -81,6 +90,8 @@ export default function ManageBooks() {
             });
             setPdfFile(null);
             setUploadSuccess(false);
+            setCoverFile(null);
+            setUploadCoverSuccess(false);
         }
         setIsModalOpen(true);
     };
@@ -101,6 +112,9 @@ export default function ManageBooks() {
         setPdfFile(null);
         setUploadError(null);
         setUploadSuccess(false);
+        setCoverFile(null);
+        setUploadCoverError(null);
+        setUploadCoverSuccess(false);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -128,6 +142,43 @@ export default function ManageBooks() {
             closeModal();
         } catch (err) {
             console.error('Error saving book:', err);
+        }
+    };
+
+    const handleCoverSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (!file.type.startsWith('image/')) {
+                setUploadCoverError('Apenas arquivos de imagem são permitidos');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                setUploadCoverError('A imagem deve ter no máximo 5MB');
+                return;
+            }
+            setCoverFile(file);
+            setUploadCoverError(null);
+            setUploadCoverSuccess(false);
+        }
+    };
+
+    const handleCoverUpload = async () => {
+        if (!coverFile) return;
+
+        setIsUploadingCover(true);
+        setUploadCoverError(null);
+
+        try {
+            const result = await uploadApi.uploadImage(coverFile);
+            if (result.imageUrl) {
+                setFormData(prev => ({ ...prev, coverUrl: result.imageUrl! }));
+                setUploadCoverSuccess(true);
+                setCoverFile(null);
+            }
+        } catch (err) {
+            setUploadCoverError(err instanceof Error ? err.message : 'Erro ao fazer upload');
+        } finally {
+            setIsUploadingCover(false);
         }
     };
 
@@ -401,14 +452,69 @@ export default function ManageBooks() {
                                 </div>
                                 <div className="form-grid">
                                     <div className="input-group">
-                                        <label>URL da Capa (opcional)</label>
-                                        <input
-                                            type="url"
-                                            className="input"
-                                            value={formData.coverUrl}
-                                            onChange={e => setFormData({ ...formData, coverUrl: e.target.value })}
-                                            placeholder="https://exemplo.com/capa.jpg"
-                                        />
+                                        <label>Capa do Livro</label>
+                                        <div className="tabs-container mb-2">
+                                            <div className="pdf-upload-container">
+                                                <input
+                                                    ref={coverInputRef}
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={handleCoverSelect}
+                                                    style={{ display: 'none' }}
+                                                />
+
+                                                {coverFile ? (
+                                                    <div className="pdf-selected">
+                                                        <FileText size={20} />
+                                                        <span className="pdf-filename">{coverFile.name}</span>
+                                                        <span className="pdf-size">({(coverFile.size / 1024 / 1024).toFixed(2)} MB)</span>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-primary btn-sm"
+                                                            onClick={handleCoverUpload}
+                                                            disabled={isUploadingCover}
+                                                        >
+                                                            {isUploadingCover ? (
+                                                                <><Loader2 size={16} className="spin" /> Enviando...</>
+                                                            ) : (
+                                                                <><Upload size={16} /> Enviar</>
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex gap-2">
+                                                        <input
+                                                            type="url"
+                                                            className="input flex-1"
+                                                            value={formData.coverUrl}
+                                                            onChange={e => setFormData({ ...formData, coverUrl: e.target.value })}
+                                                            placeholder="https://exemplo.com/capa.jpg ou faça upload"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-secondary"
+                                                            onClick={() => coverInputRef.current?.click()}
+                                                            title="Fazer upload de imagem"
+                                                        >
+                                                            <Upload size={20} />
+                                                        </button>
+                                                    </div>
+                                                )}
+
+                                                {uploadCoverError && (
+                                                    <p className="upload-error">{uploadCoverError}</p>
+                                                )}
+                                                {uploadCoverSuccess && (
+                                                    <p className="upload-success">Capa enviada com sucesso!</p>
+                                                )}
+
+                                                {formData.coverUrl && !coverFile && (
+                                                    <div className="mt-2" style={{ width: '100px', height: '140px', background: '#ccc', borderRadius: '4px', overflow: 'hidden' }}>
+                                                        <img src={formData.coverUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="input-group">
