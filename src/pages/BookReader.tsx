@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, BookOpen, Loader2, Maximize, Minimize } from 'lucide-react';
+import { ArrowLeft, BookOpen, Loader2, Maximize, Minimize, ZoomIn, ZoomOut } from 'lucide-react';
 import { booksApi, uploadApi, Book } from '../services/api';
 import './BookReader.css';
+
+const ZOOM_LEVELS = [50, 75, 100, 125, 150, 175, 200];
+const DEFAULT_ZOOM_INDEX = 2; // 100%
 
 export default function BookReader() {
     const { bookId } = useParams<{ bookId: string }>();
@@ -11,6 +14,9 @@ export default function BookReader() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [zoomIndex, setZoomIndex] = useState(DEFAULT_ZOOM_INDEX);
+
+    const currentZoom = ZOOM_LEVELS[zoomIndex];
 
     useEffect(() => {
         const loadBook = async () => {
@@ -63,6 +69,22 @@ export default function BookReader() {
             document.exitFullscreen();
             setIsFullscreen(false);
         }
+    };
+
+    const handleZoomIn = () => {
+        if (zoomIndex < ZOOM_LEVELS.length - 1) {
+            setZoomIndex(zoomIndex + 1);
+        }
+    };
+
+    const handleZoomOut = () => {
+        if (zoomIndex > 0) {
+            setZoomIndex(zoomIndex - 1);
+        }
+    };
+
+    const handleZoomReset = () => {
+        setZoomIndex(DEFAULT_ZOOM_INDEX);
     };
 
     const goBack = () => {
@@ -121,6 +143,32 @@ export default function BookReader() {
                     <span className="reader-author">{book.author}</span>
                 </div>
                 <div className="reader-controls">
+                    {/* Zoom Controls */}
+                    <div className="zoom-controls">
+                        <button
+                            className="btn btn-icon"
+                            onClick={handleZoomOut}
+                            disabled={zoomIndex === 0}
+                            title="Diminuir zoom"
+                        >
+                            <ZoomOut size={20} />
+                        </button>
+                        <button
+                            className="zoom-level-btn"
+                            onClick={handleZoomReset}
+                            title="Resetar zoom"
+                        >
+                            {currentZoom}%
+                        </button>
+                        <button
+                            className="btn btn-icon"
+                            onClick={handleZoomIn}
+                            disabled={zoomIndex === ZOOM_LEVELS.length - 1}
+                            title="Aumentar zoom"
+                        >
+                            <ZoomIn size={20} />
+                        </button>
+                    </div>
                     <button className="btn btn-icon" onClick={toggleFullscreen} title={isFullscreen ? 'Sair da tela cheia' : 'Tela cheia'}>
                         {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
                     </button>
@@ -128,20 +176,28 @@ export default function BookReader() {
             </div>
 
             <div className="reader-content">
-                {/* Use object tag with PDF viewer settings to disable download */}
-                <object
-                    data={embedUrl}
-                    type="application/pdf"
-                    className="pdf-viewer"
-                    onContextMenu={(e) => e.preventDefault()}
+                <div
+                    className="pdf-container"
+                    style={{
+                        transform: `scale(${currentZoom / 100})`,
+                        transformOrigin: 'top center'
+                    }}
                 >
-                    {/* Fallback for browsers that don't support object */}
-                    <embed
-                        src={embedUrl}
+                    {/* Use object tag with PDF viewer settings to disable download */}
+                    <object
+                        data={embedUrl}
                         type="application/pdf"
                         className="pdf-viewer"
-                    />
-                </object>
+                        onContextMenu={(e) => e.preventDefault()}
+                    >
+                        {/* Fallback for browsers that don't support object */}
+                        <embed
+                            src={embedUrl}
+                            type="application/pdf"
+                            className="pdf-viewer"
+                        />
+                    </object>
+                </div>
 
                 {/* Overlay to prevent drag and some interactions */}
                 <div className="pdf-overlay" onContextMenu={(e) => e.preventDefault()} />
