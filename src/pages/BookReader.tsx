@@ -56,30 +56,50 @@ export default function BookReader() {
             if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'p' || e.key === 'S' || e.key === 'P')) {
                 e.preventDefault();
             }
+            // Zoom with keyboard
+            if (e.ctrlKey && e.key === '=') {
+                e.preventDefault();
+                handleZoomIn();
+            }
+            if (e.ctrlKey && e.key === '-') {
+                e.preventDefault();
+                handleZoomOut();
+            }
+            if (e.ctrlKey && e.key === '0') {
+                e.preventDefault();
+                handleZoomReset();
+            }
         };
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [zoomIndex]);
+
+    // Fullscreen change listener
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
     }, []);
 
     const toggleFullscreen = () => {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
-            setIsFullscreen(true);
         } else {
             document.exitFullscreen();
-            setIsFullscreen(false);
         }
     };
 
     const handleZoomIn = () => {
         if (zoomIndex < ZOOM_LEVELS.length - 1) {
-            setZoomIndex(zoomIndex + 1);
+            setZoomIndex(prev => Math.min(prev + 1, ZOOM_LEVELS.length - 1));
         }
     };
 
     const handleZoomOut = () => {
         if (zoomIndex > 0) {
-            setZoomIndex(zoomIndex - 1);
+            setZoomIndex(prev => Math.max(prev - 1, 0));
         }
     };
 
@@ -129,7 +149,7 @@ export default function BookReader() {
     }
 
     const pdfUrl = uploadApi.getPdfUrl(book.pdf_url);
-    // Add parameters to disable download in the PDF viewer
+    // Parameters for PDF viewer - FitH makes it fit horizontally, scrollbar enabled
     const embedUrl = `${pdfUrl}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`;
 
     return (
@@ -149,14 +169,14 @@ export default function BookReader() {
                             className="btn btn-icon"
                             onClick={handleZoomOut}
                             disabled={zoomIndex === 0}
-                            title="Diminuir zoom"
+                            title="Diminuir zoom (Ctrl+-)"
                         >
-                            <ZoomOut size={20} />
+                            <ZoomOut size={18} />
                         </button>
                         <button
                             className="zoom-level-btn"
                             onClick={handleZoomReset}
-                            title="Resetar zoom"
+                            title="Resetar zoom (Ctrl+0)"
                         >
                             {currentZoom}%
                         </button>
@@ -164,12 +184,17 @@ export default function BookReader() {
                             className="btn btn-icon"
                             onClick={handleZoomIn}
                             disabled={zoomIndex === ZOOM_LEVELS.length - 1}
-                            title="Aumentar zoom"
+                            title="Aumentar zoom (Ctrl+=)"
                         >
-                            <ZoomIn size={20} />
+                            <ZoomIn size={18} />
                         </button>
                     </div>
-                    <button className="btn btn-icon" onClick={toggleFullscreen} title={isFullscreen ? 'Sair da tela cheia' : 'Tela cheia'}>
+                    <div className="control-divider" />
+                    <button
+                        className="btn btn-icon"
+                        onClick={toggleFullscreen}
+                        title={isFullscreen ? 'Sair da tela cheia (ESC)' : 'Tela cheia'}
+                    >
                         {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
                     </button>
                 </div>
@@ -177,32 +202,17 @@ export default function BookReader() {
 
             <div className="reader-content">
                 <div className="pdf-wrapper">
-                    <div
-                        className="pdf-container"
+                    <iframe
+                        src={embedUrl}
+                        className="pdf-viewer"
+                        title={book.title}
                         style={{
-                            width: `${currentZoom}%`,
-                            height: `${currentZoom}%`,
+                            transform: `scale(${currentZoom / 100})`,
+                            width: `${10000 / currentZoom}%`,
+                            height: `${10000 / currentZoom}%`,
                         }}
-                    >
-                        {/* Use object tag with PDF viewer settings to disable download */}
-                        <object
-                            data={embedUrl}
-                            type="application/pdf"
-                            className="pdf-viewer"
-                            onContextMenu={(e) => e.preventDefault()}
-                        >
-                            {/* Fallback for browsers that don't support object */}
-                            <embed
-                                src={embedUrl}
-                                type="application/pdf"
-                                className="pdf-viewer"
-                            />
-                        </object>
-                    </div>
+                    />
                 </div>
-
-                {/* Overlay to prevent drag and some interactions */}
-                <div className="pdf-overlay" onContextMenu={(e) => e.preventDefault()} />
             </div>
 
             <div className="reader-footer">
@@ -211,6 +221,10 @@ export default function BookReader() {
                     {book.class_groups?.length > 0 && (
                         <span className="text-muted">{book.class_groups.join(', ')}</span>
                     )}
+                </div>
+                <div className="reader-shortcuts">
+                    <span>Ctrl+/-: Zoom</span>
+                    <span>Ctrl+0: Resetar</span>
                 </div>
             </div>
         </div>
