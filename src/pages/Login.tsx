@@ -52,6 +52,21 @@ export default function Login() {
                 <div className="bg-gradient-1"></div>
                 <div className="bg-gradient-2"></div>
                 <div className="bg-gradient-3"></div>
+                {/* Floating Particles */}
+                {[...Array(20)].map((_, i) => (
+                    <div
+                        key={i}
+                        className="floating-particle"
+                        style={{
+                            left: `${Math.random() * 100}%`,
+                            animationDelay: `${Math.random() * 20}s`,
+                            animationDuration: `${15 + Math.random() * 20}s`,
+                            opacity: 0.3 + Math.random() * 0.5,
+                            width: `${2 + Math.random() * 4}px`,
+                            height: `${2 + Math.random() * 4}px`,
+                        }}
+                    />
+                ))}
             </div>
 
             <div className="login-container">
