@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, X, BookOpen, Loader2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, BookOpen, Loader2, Layers } from 'lucide-react';
+import PageBanner from '../../components/PageBanner';
 import { curriculumApi, CurriculumComponent } from '../../services/api';
 import './ManageCurriculum.css';
 
@@ -94,13 +95,17 @@ export default function ManageCurriculum() {
 
     return (
         <div className="manage-curriculum animate-fadeIn">
-            <div className="page-header">
-                <h1>Componentes Curriculares</h1>
-                <button className="btn btn-primary" onClick={() => openModal()}>
-                    <Plus size={20} />
-                    Adicionar Componente
-                </button>
-            </div>
+            <PageBanner
+                title="Componentes Curriculares"
+                subtitle="Gerencie os componentes curriculares"
+                icon={<Layers size={28} />}
+                actions={
+                    <button className="btn" onClick={() => openModal()}>
+                        <Plus size={20} />
+                        Adicionar Componente
+                    </button>
+                }
+            />
 
             <div className="curriculum-grid">
                 {components.map(component => (

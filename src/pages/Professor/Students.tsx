@@ -1,5 +1,6 @@
 import { useAuth } from '../../contexts/AuthContext';
 import { Users } from 'lucide-react';
+import PageBanner from '../../components/PageBanner';
 import '../Professor/MyBooks.css';
 import './Students.css';
 
@@ -18,10 +19,11 @@ export default function ProfessorStudents() {
 
     return (
         <div className="my-books animate-fadeIn">
-            <div className="page-header">
-                <h1>Meus Alunos</h1>
-                <span className="badge">{myStudents.length} alunos</span>
-            </div>
+            <PageBanner
+                title="Meus Alunos"
+                subtitle="Gerencie seus alunos"
+                icon={<Users size={28} />}
+            />
 
             {myStudents.length === 0 ? (
                 <div className="empty-state">

@@ -1,8 +1,9 @@
 import { useAuth } from '../../contexts/AuthContext';
 import { useBooks } from '../../contexts/BooksContext';
-import { BookOpen, GraduationCap, Layers } from 'lucide-react';
+import { BookOpen, GraduationCap, Layers, BarChart3 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import BookCard from '../../components/BookCard';
+import PageBanner from '../../components/PageBanner';
 import '../Admin/Dashboard.css';
 
 export default function StudentDashboard() {
@@ -38,9 +39,11 @@ export default function StudentDashboard() {
 
     return (
         <div className="admin-dashboard animate-fadeIn">
-            <div className="page-header">
-                <h1>Meu Painel de Estudos</h1>
-            </div>
+            <PageBanner
+                title="Meu Painel de Estudos"
+                subtitle="Visão geral dos seus estudos"
+                icon={<BarChart3 size={28} />}
+            />
 
             <div className="stats-grid">
                 {stats.map((stat, index) => (

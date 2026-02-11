@@ -39,7 +39,7 @@
 .search-filter .search-input:focus {
     outline: none;
     border-color: var(--color-accent-primary);
-    box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.12);
+    box-shadow: 0 0 0 3px rgba(0, 32, 96, 0.12);
 }
 
 .filter-toggle {

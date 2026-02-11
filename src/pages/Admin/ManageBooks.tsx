@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBooks } from '../../contexts/BooksContext';
-import { Plus, Edit2, Trash2, X, Upload, FileText, Loader2, Check, Eye } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Upload, FileText, Loader2, Check, Eye, BookOpen } from 'lucide-react';
+import PageBanner from '../../components/PageBanner';
 import { Book, BookFilters as BookFiltersType, BOOK_TYPES, BookType } from '../../types';
 import BookFilters from '../../components/BookFilters';
 import { uploadApi, curriculumApi, seriesApi, CurriculumComponent, Series } from '../../services/api';
@@ -328,13 +329,17 @@ export default function ManageBooks() {
 
     return (
         <div className="manage-books animate-fadeIn">
-            <div className="page-header">
-                <h1>Gerenciar Livros</h1>
-                <button className="btn btn-primary" onClick={() => openModal()}>
-                    <Plus size={20} />
-                    Adicionar Livro
-                </button>
-            </div>
+            <PageBanner
+                title="Gerenciar Livros"
+                subtitle="Gerencie todos os livros da plataforma"
+                icon={<BookOpen size={28} />}
+                actions={
+                    <button className="btn" onClick={() => openModal()}>
+                        <Plus size={20} />
+                        Adicionar Livro
+                    </button>
+                }
+            />
 
             <BookFilters onFilterChange={setFilters} />
 

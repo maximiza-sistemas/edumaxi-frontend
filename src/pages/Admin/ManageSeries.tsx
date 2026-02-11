@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, X, GraduationCap, Loader2 } from 'lucide-react';
+import PageBanner from '../../components/PageBanner';
 import { seriesApi, Series } from '../../services/api';
 import './ManageCurriculum.css';
 
@@ -94,13 +95,17 @@ export default function ManageSeries() {
 
     return (
         <div className="manage-curriculum animate-fadeIn">
-            <div className="page-header">
-                <h1>Gerenciar Séries</h1>
-                <button className="btn btn-primary" onClick={() => openModal()}>
-                    <Plus size={20} />
-                    Adicionar Série
-                </button>
-            </div>
+            <PageBanner
+                title="Gerenciar Séries"
+                subtitle="Gerencie as séries disponíveis"
+                icon={<GraduationCap size={28} />}
+                actions={
+                    <button className="btn" onClick={() => openModal()}>
+                        <Plus size={20} />
+                        Adicionar Série
+                    </button>
+                }
+            />
 
             <div className="curriculum-grid">
                 {series.map(item => (
