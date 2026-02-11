@@ -90,9 +90,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
     perspective: 2000px;
-    overflow: hidden;
+    overflow: auto;
+    min-height: 0;
 }
 
 /* Book Container */

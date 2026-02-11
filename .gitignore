@@ -4,10 +4,9 @@ node_modules/
 # Build output
 dist/
 
-# Environment
+# Environment (local only)
 .env
 .env.local
-.env.production
 
 # IDE
 .vscode/

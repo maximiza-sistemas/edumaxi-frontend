@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { ArrowLeft, BookOpen, Loader2, Maximize, Minimize, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react';
@@ -27,6 +27,8 @@ export default function BookReader() {
     const [flipDirection, setFlipDirection] = useState<'next' | 'prev' | null>(null);
     const [isBookOpen, setIsBookOpen] = useState(false);
     const [loadedPages, setLoadedPages] = useState<Set<number>>(new Set());
+    const [availableHeight, setAvailableHeight] = useState<number>(0);
+    const contentRef = useRef<HTMLDivElement>(null);
 
     const currentZoom = ZOOM_LEVELS[zoomIndex];
 
@@ -81,6 +83,20 @@ export default function BookReader() {
         }
     }, [book, loading]);
 
+    // Measure available content area height
+    useEffect(() => {
+        const updateHeight = () => {
+            if (contentRef.current) {
+                // Subtract padding (16px × 2 from spacing-md) and some margin for shadows
+                const h = contentRef.current.clientHeight - 40;
+                setAvailableHeight(h > 0 ? h : 500);
+            }
+        };
+        updateHeight();
+        window.addEventListener('resize', updateHeight);
+        return () => window.removeEventListener('resize', updateHeight);
+    }, []);
+
     // Prevent context menu
     useEffect(() => {
         const handleContextMenu = (e: MouseEvent) => e.preventDefault();
@@ -111,7 +127,16 @@ export default function BookReader() {
 
     // Fullscreen listener
     useEffect(() => {
-        const handleFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement);
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+            // Recalculate available height after fullscreen transition
+            setTimeout(() => {
+                if (contentRef.current) {
+                    const h = contentRef.current.clientHeight - 40;
+                    setAvailableHeight(h > 0 ? h : 500);
+                }
+            }, 100);
+        };
         document.addEventListener('fullscreenchange', handleFullscreenChange);
         return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
     }, []);
@@ -252,7 +277,7 @@ export default function BookReader() {
             </div>
 
             {/* Book Content */}
-            <div className="reader-content">
+            <div className="reader-content" ref={contentRef}>
                 <div className={`book-container ${isBookOpen ? 'open' : ''} ${isCoverPage ? 'cover-mode' : ''}`}>
                     {/* Navigation Arrows */}
                     <button
@@ -283,7 +308,7 @@ export default function BookReader() {
                                     <Page
                                         key={`preload-${pageNum}`}
                                         pageNumber={pageNum}
-                                        scale={currentZoom}
+                                        height={availableHeight > 0 ? Math.floor(availableHeight * currentZoom) : undefined}
                                         renderTextLayer={false}
                                         renderAnnotationLayer={false}
                                         onLoadSuccess={() => onPageLoadSuccess(pageNum)}
@@ -298,7 +323,7 @@ export default function BookReader() {
                                     <div className="page-inner">
                                         <Page
                                             pageNumber={1}
-                                            scale={currentZoom}
+                                            height={availableHeight > 0 ? Math.floor(availableHeight * currentZoom) : undefined}
                                             renderTextLayer={false}
                                             renderAnnotationLayer={false}
                                             loading=""
@@ -315,7 +340,7 @@ export default function BookReader() {
                                             {leftPage <= numPages && (
                                                 <Page
                                                     pageNumber={leftPage}
-                                                    scale={currentZoom}
+                                                    height={availableHeight > 0 ? Math.floor(availableHeight * currentZoom) : undefined}
                                                     renderTextLayer={false}
                                                     renderAnnotationLayer={false}
                                                     loading=""
@@ -334,7 +359,7 @@ export default function BookReader() {
                                             {rightPage <= numPages && (
                                                 <Page
                                                     pageNumber={rightPage}
-                                                    scale={currentZoom}
+                                                    height={availableHeight > 0 ? Math.floor(availableHeight * currentZoom) : undefined}
                                                     renderTextLayer={false}
                                                     renderAnnotationLayer={false}
                                                     loading=""
