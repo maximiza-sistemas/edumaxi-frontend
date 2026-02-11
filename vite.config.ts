@@ -11,5 +11,8 @@ export default defineConfig({
     commonjsOptions: {
       include: [/react-pdf/, /pdfjs-dist/, /node_modules/]
     }
+  },
+  preview: {
+    allowedHosts: ['edudigital.maximizaedu.com']
   }
 })
