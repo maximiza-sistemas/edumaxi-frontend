@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Plus, Edit2, Trash2, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Users } from 'lucide-react';
+import PageBanner from '../../components/PageBanner';
 import { User, UserRole } from '../../types';
 import { CLASS_GROUPS } from '../../contexts/BooksContext';
 import './ManageUsers.css';
@@ -77,13 +78,17 @@ export default function ManageUsers() {
 
     return (
         <div className="manage-users animate-fadeIn">
-            <div className="page-header">
-                <h1>Gerenciar Usuários</h1>
-                <button className="btn btn-primary" onClick={() => openModal()}>
-                    <Plus size={20} />
-                    Adicionar Usuário
-                </button>
-            </div>
+            <PageBanner
+                title="Gerenciar Usuários"
+                subtitle="Gerencie todos os usuários do sistema"
+                icon={<Users size={28} />}
+                actions={
+                    <button className="btn" onClick={() => openModal()}>
+                        <Plus size={20} />
+                        Adicionar Usuário
+                    </button>
+                }
+            />
 
             <div className="filter-tabs">
                 <button

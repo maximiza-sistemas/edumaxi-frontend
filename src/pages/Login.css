@@ -22,7 +22,7 @@
     position: absolute;
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(0, 188, 212, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(0, 180, 216, 0.15) 0%, transparent 70%);
     top: -200px;
     left: -200px;
     filter: blur(40px);
@@ -33,7 +33,7 @@
     position: absolute;
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(26, 54, 93, 0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(0, 32, 96, 0.12) 0%, transparent 70%);
     bottom: -150px;
     right: -150px;
     filter: blur(40px);
@@ -44,7 +44,7 @@
     position: absolute;
     width: 450px;
     height: 450px;
-    background: radial-gradient(circle, rgba(44, 82, 130, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(0, 32, 96, 0.1) 0%, transparent 70%);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -55,7 +55,7 @@
 /* Floating Particles */
 .floating-particle {
     position: absolute;
-    background: linear-gradient(135deg, rgba(0, 188, 212, 0.6), rgba(26, 54, 93, 0.4));
+    background: linear-gradient(135deg, rgba(0, 180, 216, 0.6), rgba(0, 32, 96, 0.4));
     border-radius: 50%;
     bottom: -20px;
     animation: floatUp linear infinite;
@@ -67,8 +67,8 @@
     position: absolute;
     inset: 0;
     background-image:
-        linear-gradient(rgba(26, 54, 93, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(26, 54, 93, 0.02) 1px, transparent 1px);
+        linear-gradient(rgba(0, 32, 96, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 32, 96, 0.02) 1px, transparent 1px);
     background-size: 60px 60px;
     animation: gridPulse 10s ease-in-out infinite;
     z-index: 0;
@@ -192,11 +192,11 @@
     width: 100%;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(26, 54, 93, 0.1);
+    border: 1px solid rgba(0, 32, 96, 0.1);
     border-radius: 24px;
     padding: 48px 40px;
     box-shadow:
-        0 25px 60px rgba(26, 54, 93, 0.15),
+        0 25px 60px rgba(0, 32, 96, 0.15),
         0 0 0 1px rgba(255, 255, 255, 0.8) inset;
     animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -205,9 +205,9 @@
 .login-container:hover {
     transform: translateY(-4px);
     box-shadow:
-        0 30px 70px rgba(26, 54, 93, 0.2),
+        0 30px 70px rgba(0, 32, 96, 0.2),
         0 0 0 1px rgba(255, 255, 255, 0.9) inset,
-        0 0 60px rgba(0, 188, 212, 0.08);
+        0 0 60px rgba(0, 180, 216, 0.08);
 }
 
 /* Glowing Border Effect */
@@ -216,10 +216,10 @@
     position: absolute;
     inset: -2px;
     background: linear-gradient(135deg,
-            rgba(0, 188, 212, 0.3) 0%,
+            rgba(0, 180, 216, 0.3) 0%,
             transparent 40%,
             transparent 60%,
-            rgba(26, 54, 93, 0.2) 100%);
+            rgba(0, 32, 96, 0.2) 100%);
     border-radius: 26px;
     z-index: -1;
     opacity: 0;
@@ -246,19 +246,19 @@
 .login-logo-image {
     max-width: 220px;
     height: auto;
-    filter: drop-shadow(0 4px 15px rgba(26, 54, 93, 0.15));
+    filter: drop-shadow(0 4px 15px rgba(0, 32, 96, 0.15));
     transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .login-logo-image:hover {
     transform: scale(1.05);
-    filter: drop-shadow(0 8px 25px rgba(0, 188, 212, 0.25));
+    filter: drop-shadow(0 8px 25px rgba(0, 180, 216, 0.25));
 }
 
 .login-header h1 {
     font-size: 1.75rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #1a365d 0%, #00bcd4 100%);
+    background: linear-gradient(135deg, #002060 0%, #00b4d8 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -301,17 +301,17 @@
 }
 
 .form-group:focus-within label {
-    color: #00bcd4;
+    color: #00b4d8;
 }
 
 .form-group label svg {
-    color: #1a365d;
+    color: #002060;
     transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .form-group:focus-within label svg {
     transform: scale(1.15);
-    color: #00bcd4;
+    color: #00b4d8;
 }
 
 .form-group input {
@@ -333,11 +333,11 @@
 
 .form-group input:focus {
     outline: none;
-    border-color: #00bcd4;
+    border-color: #00b4d8;
     background: white;
     box-shadow:
-        0 0 0 4px rgba(0, 188, 212, 0.12),
-        0 4px 20px rgba(0, 188, 212, 0.08);
+        0 0 0 4px rgba(0, 180, 216, 0.12),
+        0 4px 20px rgba(0, 180, 216, 0.08);
 }
 
 .form-group input::placeholder {
@@ -353,7 +353,7 @@
     width: 100%;
     padding: 16px 24px;
     margin-top: 8px;
-    background: linear-gradient(135deg, #1a365d 0%, #00bcd4 100%);
+    background: linear-gradient(135deg, #002060 0%, #00b4d8 100%);
     background-size: 200% 200%;
     border: none;
     border-radius: 12px;
@@ -362,7 +362,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 20px rgba(26, 54, 93, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 32, 96, 0.3);
     position: relative;
     overflow: hidden;
     animation: fadeIn 0.8s ease 0.6s backwards;
@@ -391,13 +391,13 @@
     transform: translateY(-3px);
     background-position: 100% 50%;
     box-shadow:
-        0 8px 30px rgba(26, 54, 93, 0.35),
-        0 0 40px rgba(0, 188, 212, 0.15);
+        0 8px 30px rgba(0, 32, 96, 0.35),
+        0 0 40px rgba(0, 180, 216, 0.15);
 }
 
 .login-btn:active:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 32, 96, 0.3);
 }
 
 .login-btn:disabled {
@@ -459,7 +459,7 @@
     justify-content: center;
     height: 100vh;
     gap: 16px;
-    color: #1a365d;
+    color: #002060;
 }
 
 .spin {

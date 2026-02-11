@@ -7,7 +7,9 @@ import {
     GraduationCap,
     BookMarked,
     UserCircle,
-    Layers
+    Layers,
+    LogOut,
+    ChevronRight
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -34,7 +36,7 @@ const studentNav: NavItem[] = [
 ];
 
 export default function Sidebar() {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const location = useLocation();
 
     const getNavItems = (): NavItem[] => {
@@ -46,20 +48,11 @@ export default function Sidebar() {
         }
     };
 
-    const getRoleColor = () => {
-        switch (user?.role) {
-            case 'admin': return 'var(--color-admin)';
-            case 'professor': return 'var(--color-professor)';
-            case 'student': return 'var(--color-student)';
-            default: return 'var(--color-accent-primary)';
-        }
-    };
-
     const getRoleLabel = () => {
         switch (user?.role) {
-            case 'admin': return 'Administrador';
-            case 'professor': return 'Professor';
-            case 'student': return 'Aluno';
+            case 'admin': return 'ADMIN';
+            case 'professor': return 'PROFESSOR';
+            case 'student': return 'ALUNO';
             default: return '';
         }
     };
@@ -69,22 +62,6 @@ export default function Sidebar() {
             <div className="sidebar-header">
                 <div className="logo">
                     <img src="/logo-maximiza.png" alt="Maximiza - Soluções Educacionais" className="logo-image" />
-                </div>
-            </div>
-
-            <div className="sidebar-user">
-                <div className="user-avatar">
-                    {user?.avatar ? (
-                        <img src={user.avatar} alt={user.name} />
-                    ) : (
-                        <UserCircle size={40} />
-                    )}
-                </div>
-                <div className="user-info">
-                    <span className="user-name">{user?.name}</span>
-                    <span className="user-role" style={{ color: getRoleColor() }}>
-                        {getRoleLabel()}
-                    </span>
                 </div>
             </div>
 
@@ -100,14 +77,29 @@ export default function Sidebar() {
                     >
                         <span className="nav-icon">{item.icon}</span>
                         <span className="nav-label">{item.label}</span>
+                        <ChevronRight size={16} className="nav-chevron" />
                     </NavLink>
                 ))}
             </nav>
 
-            <div className="sidebar-footer">
-                <div className="version-info">
-                    <span>MaxiEducação v1.0</span>
+            <div className="sidebar-bottom">
+                <div className="sidebar-user">
+                    <div className="user-avatar">
+                        {user?.avatar ? (
+                            <img src={user.avatar} alt={user.name} />
+                        ) : (
+                            <UserCircle size={32} />
+                        )}
+                    </div>
+                    <div className="user-info">
+                        <span className="user-name">{user?.name}</span>
+                        <span className="user-role">{getRoleLabel()}</span>
+                    </div>
                 </div>
+                <button className="sidebar-logout" onClick={logout}>
+                    <LogOut size={18} />
+                    <span>Sair</span>
+                </button>
             </div>
         </aside>
     );

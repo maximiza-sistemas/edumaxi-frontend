@@ -1,7 +1,8 @@
 import { useAuth } from '../../contexts/AuthContext';
 import { useBooks } from '../../contexts/BooksContext';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Search, FileText, Eye } from 'lucide-react';
+import { BookOpen, Search, FileText, Eye, Library } from 'lucide-react';
+import PageBanner from '../../components/PageBanner';
 import { useState } from 'react';
 import { uploadApi } from '../../services/api';
 import './MyLibrary.css';
@@ -38,12 +39,11 @@ export default function StudentLibrary() {
 
     return (
         <div className="my-library animate-fadeIn">
-            <div className="page-header">
-                <h1>Minha Biblioteca</h1>
-                {user?.class_group && (
-                    <span className="class-badge">Turma: {user.class_group}</span>
-                )}
-            </div>
+            <PageBanner
+                title="Minha Biblioteca"
+                subtitle={user?.class_group ? `Turma: ${user.class_group}` : 'Acesse seus livros'}
+                icon={<Library size={28} />}
+            />
 
             <div className="library-search">
                 <Search size={18} />

@@ -1,6 +1,7 @@
 import { useBooks } from '../../contexts/BooksContext';
 import BookCard from '../../components/BookCard';
 import { BookOpen, Search } from 'lucide-react';
+import PageBanner from '../../components/PageBanner';
 import { useState } from 'react';
 import { CURRICULUM_COMPONENTS, CLASS_GROUPS } from '../../contexts/BooksContext';
 import './MyBooks.css';
@@ -19,9 +20,11 @@ export default function ProfessorMyBooks() {
 
     return (
         <div className="my-books animate-fadeIn">
-            <div className="page-header">
-                <h1>Biblioteca de Livros</h1>
-            </div>
+            <PageBanner
+                title="Biblioteca de Livros"
+                subtitle="Acesse os livros disponíveis"
+                icon={<BookOpen size={28} />}
+            />
 
             <div className="books-filters">
                 <div className="search-input">
